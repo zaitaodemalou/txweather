@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>腾讯天气</title>
+  <meta name="description" content="腾讯天气">
+  <link rel="stylesheet" href="./index.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/qweather-icons@1.8.0/font/qweather-icons.css">
+  <script src="./echarts.js"></script>
+</head>
+
+<body>
+  <div>
+    <div id="header">
+      <div class="container">
+        <img src="./imgs/logo.png" alt="logo" id="logo">
+        <div id="imgslocation">
+          <a href="https://www.qq.com/" style="color: #fff;margin-right: 20px;">腾讯网首页</a>
+          <a href="javascript:void(0)" onclick="window.aria.start()" style="color: #fff;margin-right: 20px;">无障碍浏览</a>
+          <div id="imgsshow">
+            <p id="txt-cur-location" class="position">陕西-西安</p>
+            <div id="imgsattention">
+              <h3 id="titl">关注的城市</h3>
+              <ol id="ls-attention">
+                <li id="tips-attention">点击“添加关注”添加城市哟~</li>
+              </ol>
+            </div>
+          </div>
+          <a href="javascript:;" id="btn-attention" style="display: inline-block;">[添加关注]</a>
+          <div id="imgssearch">
+            <input type="input" id="location" placeholder="搜索市、区、县等">
+            <ul id="ls-match">
+              <li class="match">陕西-西安</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="imgscurrent">
+      <div class="container">
+      </div>
+    </div>
+    <div class="container" id="imgshours">
+      <h2 id="title">逐小时预报</h2>
+      <a id="txt-source" href="http://www.weather.com.cn/" target="_blank">数据来源于中国天气网</a>
+      <div class="imgspage-ctrl">
+        <a href="javascript:;" id="btn-prev" class="btn"></a>
+        <a href="javascript:;" id="btn-next" class="btn"></a>
+      </div>
+      <div id="imgsweather">
+        <ol id="ls-weather-hour" class="ls-weather">
+
+        </ol>
+      </div>
+    </div>
+    <div class="container" style="margin-bottom: 35px;">
+      <div id="imgs7-days">
+        <a id="link-15" href="http://www.weather.com.cn/weather15d/101110101.shtml" target="_blank">15日天气预报</a>
+        <h2 id="title">7日天气预报</h2>
+        <div id="imgsweather" class="box-content">
+          <ol id="ls-weather-day" class="ls-weather">
+          </ol>
+          <div id="chart-days" _echarts_instance_="ec_1755348201621"
+            style="-webkit-tap-highlight-color: transparent; user-select: none; background: rgba(0, 0, 0, 0);">
+            <div
+              style="position: relative; overflow: hidden; width: 740px; height: 174px; padding: 0px; margin: 0px; border-width: 0px;">
+              <canvas width="1480" height="348" data-zr-dom-id="zr_0"
+                style="position: absolute; left: 0px; top: 0px; width: 740px; height: 174px; user-select: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0); padding: 0px; margin: 0px; border-width: 0px;"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="imgsliving-index">
+        <div class="imgspage-ctrl">
+          <a href="javascript:;" id="btn-prev" class="btn"></a>
+          <a href="javascript:;" id="btn-next" class="btn"></a>
+        </div>
+        <h2 id="title">生活指数</h2>
+        <div id="imgspages">
+          <div id="imgscontent">
+            <ul id="ls-living1" class="page">
+              <li class="item odd">
+                <div class="imgssub"> <i class="icon icon_chuanyi_shushi"></i>
+                  <p class="content">穿衣&nbsp;舒适</p>
+                </div>
+                <div class="imgsdetail">
+                  <div class="detail">建议着长袖T恤、衬衫加单裤等服装。年老体弱者宜着针织长袖衬衫、马甲和长裤。</div>
+                </div>
+              </li>
+              <li class="item even">
+                <div class="imgssub"> <i class="icon icon_yusan"></i>
+                  <p class="content">雨伞&nbsp;不带伞</p>
+                </div>
+                <div class="imgsdetail">
+                  <div class="detail">阴天，但降水概率很低，因此您在出门的时候无须带雨伞。</div>
+                </div>
+              </li>
+              <li class="item odd">
+                <div class="imgssub"> <i class="icon icon_ganmao"></i>
+                  <p class="content">感冒&nbsp;较易发</p>
+                </div>
+                <div class="imgsdetail">
+                  <div class="detail">天气转凉，空气湿度较大，较易发生感冒，体质较弱的朋友请注意适当防护。</div>
+                </div>
+              </li>
+              <li class="item even">
+                <div class="imgssub"> <i class="icon icon_xiche"></i>
+                  <p class="content">洗车&nbsp;不适宜</p>
+                </div>
+                <div class="imgsdetail">
+                  <div class="detail">将有降水，不宜洗车。</div>
+                </div>
+              </li>
+              <li class="item odd">
+                <div class="imgssub"> <i class="icon icon_yundong"></i>
+                  <p class="content">运动&nbsp;适宜</p>
+                </div>
+                <div class="imgsdetail">
+                  <div class="detail">天气较好，赶快投身大自然参与户外运动，尽情感受运动的快乐吧。</div>
+                </div>
+              </li>
+              <li class="item even">
+                <div class="imgssub"> <i class="icon icon_fangsai"></i>
+                  <p class="content">防晒&nbsp;弱</p>
+                </div>
+                <div class="imgsdetail">
+                  <div class="detail">属弱紫外辐射天气，长期在户外，建议涂擦SPF在8-12之间的防晒护肤品。</div>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="imgsfooter">
+      <div id="imgssponsors">
+        <a href="http://www.cma.gov.cn/" target="_blank"><img src="./imgs/1.png"></a>
+        <a href="http://www.nmc.cn/" target="_blank"><img src="./imgs/2.png"></a>
+        <a href="http://www.weather.com.cn/" target="_blank"><img src="./imgs/3.png"></a>
+      </div>
+      <div id="tcopyright" class="tcopyright" bosszone="footer" role="contentinfo">
+        <div><a href="http://www.tencent.com/" target="_blank" rel="nofollow">关于腾讯</a> | <a
+            href="http://www.tencent.com/index_e.shtml" target="_blank" rel="nofollow">About Tencent</a> | <a
+            href="http://new.qq.com/static/contract.shtml" target="_blank" rel="nofollow">服务协议</a> | <a
+            href="https://privacy.qq.com/mb/policy/tencent-privacypolicy" target="_blank" rel="nofollow">隐私政策</a> | <a
+            href="http://open.qq.com/" target="_blank" rel="nofollow">开放平台</a> | <a href="http://www.tencentmind.com/"
+            target="_blank" rel="nofollow">广告服务</a> | <a href="http://hr.tencent.com/" target="_blank"
+            rel="nofollow">腾讯招聘</a> | <a href="http://gongyi.qq.com/" target="_blank" rel="nofollow">腾讯公益</a></div>
+        <div class="en">Copyright © 1998 - 2025 Tencent. All Rights Reserved</div>
+        <div><a href="http://www.tencent.com/" target="_blank" rel="nofollow">腾讯公司</a> <a
+            href="http://www.tencent.com/zh-cn/le/copyrightstatement.shtml" target="_blank" rel="nofollow">版权所有</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+
+</html>
