@@ -1,0 +1,335 @@
+*{
+    padding: 0;
+    margin: 0;
+}
+
+
+body {
+    background: #f6f9fe url(https://mat1.gtimg.com/qqcdn/tupload/1630660726331.jpg) no-repeat center top;
+}
+
+ol, ul {
+    list-style: none;
+}
+
+
+input, textarea {
+    font-size: 12px;
+}
+
+a {
+    text-decoration: none;
+    color: #333;
+}
+
+
+#header {
+    height: 64px;
+    border-bottom: 1px solid rgba(255, 255, 255, .24);
+    margin-bottom: 42px;
+    position: relative;
+    z-index: 2;
+}
+
+#header #logo {
+    float: left;
+    height: 37px;
+    margin-top: 13px;
+}
+
+#imgslocation {
+    text-align: right;
+    padding-top: 17px;
+    height: 32px;
+    vertical-align: middle;
+    position: relative;
+}
+
+#imgslocation #imgsshow {
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 12px;
+    padding: 10px 0;
+    position: relative;
+}
+
+#imgslocation #imgsshow:hover #imgsattention {
+    display: block;
+}
+
+#txt-cur-location {
+    font-size: 16px;
+    color: #fff;
+    cursor: pointer;
+}
+
+#txt-cur-location:before {
+    content: '';
+    float: left;
+    height: 16px;
+    width: 16px;
+    background-image: url(https://mat1.gtimg.com/qqcdn/tupload/1630660669191.png);
+    margin-right: 7px;
+    margin-top: 1px;
+}
+
+#btn-attention {
+    display: inline-block;
+    font-size: 14px;
+    color: #fff;
+    opacity: .7;
+    margin-right: 20px;
+    vertical-align: middle;
+}
+
+#btn-attention:hover {
+    color: #fff;
+    opacity: 1;
+}
+
+#imgscurrent .container {
+    height: 310px;
+    background-repeat: no-repeat;
+    background-position: right top;
+    position: relative;
+}
+
+#imgscurrent #imgscurrent-weather {
+    position: absolute;
+    top: 78px;
+    right: 80px;
+    width: 134px;
+    height: 134px;
+}
+
+#imgscurrent #imgscurrent-weather .big_icon {
+    font-size: 134px;
+    color: #FED54E;
+}
+
+#imgscurrent #txt-pub-time {
+    font-size: 14px;
+    color: #fff;
+    opacity: .6;
+    height: 19px;
+    line-height: 19px;
+    margin-bottom: 20px;
+}
+
+#imgscurrent #imgsmain {
+    height: 86px;
+    margin-bottom: 28px;
+    vertical-align: bottom;
+    font-size: 0;
+}
+
+#imgscurrent #imgsmain #txt-temperature {
+    display: inline-block;
+    font-size: 86px;
+    color: #fff;
+    height: 86px;
+    line-height: 86px;
+}
+
+#imgscurrent #imgsmain #txt-name {
+    display: inline-block;
+    font-size: 28px;
+    color: #fff;
+    line-height: 45px;
+    height: 45px;
+    margin-right: 24px;
+}
+
+#imgscurrent #imgsmain #imgsaqi {
+    display: inline-block;
+    position: relative;
+    margin-right: 24px;
+    cursor: pointer;
+}
+
+#imgscurrent #imgsmain #imgsaqi:hover .popwindow {
+    display: block;
+}
+
+#imgscurrent #imgsmain .info-aqi {
+    border-radius: 18px;
+    height: 18px;
+    line-height: 18px;
+    font-size: 14px;
+    color: #fff;
+    padding: 3px 10px 3px 3px;
+}
+
+#imgscurrent #imgsmain .info-aqi:before {
+    content: '';
+    float: left;
+    width: 18px;
+    height: 18px;
+    background-color: #fff;
+    background-repeat: no-repeat;
+    background-position: center;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+#imgscurrent #imgsmain .air-level1 .header {
+    background-color: #a3d765;
+}
+
+#imgscurrent #imgsmain .air-level1 .header:before {
+    border-bottom-color: #a3d765;
+}
+
+#imgscurrent #imgsmain .air-level1 .info-aqi {
+    background-color: #a3d765;
+}
+
+#imgscurrent #imgsmain .air-level1 .info-aqi:before {
+    background-image: url(https://mat1.gtimg.com/qqcdn/tupload/1630660670276.png);
+}
+
+#imgscurrent #imgsmain #ls-warning {
+    display: inline-block;
+}
+
+#imgscurrent #imgsother {
+    vertical-align: middle;
+    font-size: 0;
+    margin-bottom: 28px;
+}
+
+#imgscurrent #imgsother .item {
+    display: inline-block;
+    margin-right: 42px;
+    color: #fff;
+    height: 20px;
+    line-height: 20px;
+    font-size: 0;
+}
+
+#imgscurrent #imgsother #info-limit {
+    visibility: hidden;
+}
+
+#imgscurrent #imgsother #info-limit.show {
+    visibility: visible;
+}
+
+#imgscurrent #imgsother .icon {
+    display: inline-block;
+    height: 20px;
+    width: 20px;
+    background-size: 20px 20px;
+    vertical-align: middle;
+    margin-right: 10px;
+}
+
+#imgscurrent #imgsother .txt {
+    display: inline-block;
+    font-size: 18px;
+    vertical-align: middle;
+}
+
+#imgscurrent #imgsother .wind-4 {
+    background-image: url(https://mat1.gtimg.com/qqcdn/tupload/1630660671587.png);
+}
+
+#imgscurrent #imgsother #icon-humidity {
+    background-image: url(https://mat1.gtimg.com/qqcdn/tupload/1630660665884.png);
+}
+
+#imgscurrent #imgsother #icon-kPa {
+    background-image: url(https://mat1.gtimg.com/qqcdn/tupload/1630660670106.png);
+}
+
+#imgscurrent #imgsother #icon-limit {
+    background-image: url(https://mat1.gtimg.com/qqcdn/tupload/1630660670945.png);
+}
+
+#imgshours {
+    height: 143px;
+    margin: 130px auto 40px;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 0 14px 0 rgba(0, 0, 0, .08);
+    width: 1140px;
+    padding: 20px 30px 27px;
+    overflow: hidden;
+}
+
+#imgshours #title {
+    font-size: 18px;
+    color: #344665;
+    height: 21px;
+    line-height: 21px;
+    margin-bottom: 22px;
+    float: left;
+    margin-right: 10px;
+}
+
+#imgshours #title:before {
+    content: '';
+    float: left;
+    height: 7px;
+    width: 7px;
+    overflow: hidden;
+    margin-right: 10px;
+    background: #344665;
+    border-radius: 50%;
+    margin-top: 8px;
+}
+
+#imgshours #txt-source {
+    float: left;
+    font-size: 12px;
+    color: #8a9baf;
+    height: 21px;
+    line-height: 21px;
+}
+
+#imgshours .imgspage-ctrl {
+    float: right;
+}
+
+#imgshours #imgsweather {
+    clear: both;
+    width: 4800px;
+    -webkit-transition: margin 1s ease-in-out;
+    -moz-transition: margin 1s ease-in-out;
+    -ms-transition: margin 1s ease-in-out;
+    -o-transition: margin 1s ease-in-out;
+    transition: margin 1s ease-in-out;
+}
+
+#imgshours #ls-weather-hour .item {
+    float: left;
+    width: 40px;
+    margin-right: 60px;
+    text-align: center;
+    background-repeat: no-repeat;
+    background-position: right;
+    position: relative;
+}
+
+#imgshours #ls-weather-hour .item .txt-time {
+    font-size: 14px;
+    color: #8a9baf;
+    line-height: 14px;
+    height: 14px;
+    margin-bottom: 24px;
+}
+
+#imgshours #ls-weather-hour .item .icon {
+    display: block;
+    height: 30px;
+    width: 30px;
+    margin: 0 auto;
+    margin-bottom: 18px;
+}
+
+#imgshours #ls-weather-hour .item .txt-degree {
+    font-size: 18px;
+    color: #384c78;
+    line-height: 14px;
+}
+
