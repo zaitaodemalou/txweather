@@ -155,5 +155,467 @@
     </div>
   </div>
 </body>
+<script>
+
+  // fetch(`https://mj4y3jgbfa.re.qweatherapi.com/geo/v2/city/lookup?location=西安`, {
+  //   method: "GET",
+  //   headers: {
+  //     "X-QW-Api-Key": "a61047cd4b504375a4bc461dba98c39c"
+  //   }
+  // }).then(res => res.json()).then(data => {
+  //   console.log(5555555, data)
+  // })
+
+  const cityInfo = [
+    {
+      name: "北京",
+      id: "101010100"
+    },
+    {
+      name: "上海",
+      id: "101020100"
+    },
+    {
+      name: "陕西-西安",
+      id: "101110101"
+    },
+    {
+      name: "广东-深圳",
+      id: "101280601"
+    },
+    {
+      name: "内蒙古-呼和浩特",
+      id: "101080101r"
+    }
+  ]
+
+  // 基于 cityInfo 实现 id=location 的input框模糊搜索功能
+  const locationdom = document.getElementById("location")
+  locationdom.addEventListener("input", (e) => {
+    const domMatch = document.getElementById("ls-match")
+
+    const value = e.target.value
+    if (value === "") {
+      domMatch.style.display = "none"
+      return
+    }
+    const res = cityInfo.filter(item => item.name.includes(value))
+    let html = ""
+    for (let index = 0; index < res.length; index++) {
+      const element = res[index];
+      html += `<li class="match" data-id="${element.id}">${element.name}</li>`
+    }
+    domMatch.innerHTML = html
+    // 显示domMatch元素
+    domMatch.style.display = "block"
+    console.log(111, res)
+  })
+
+  let list = []
+
+
+  // 点击匹配项，将匹配项的值赋值给input框
+  //  用事件委托
+  const domMatch = document.getElementById("ls-match")
+  domMatch.addEventListener("click", (e) => {
+    if (e.target.classList.contains("match")) {
+      locationdom.value = e.target.innerHTML
+      const curlocation = document.getElementById("txt-cur-location")
+      curlocation.innerText = e.target.innerHTML
+      console.log(2222, list, e.target.innerHTML);
+
+      btnAttention.innerText = list.find(item => item.name === e.target.innerHTML) ? "取消关注" : "添加关注"
+
+      domMatch.style.display = "none"
+      const id = e.target.dataset.id
+      getHistory(id)
+      xiaoshi(id)
+      now(id)
+    }
+  })
+
+  // 添加 btn-attention 添加关注 把当前城市添加到关注列表
+  const btnAttention = document.getElementById("btn-attention")
+  btnAttention.addEventListener("click", (e) => {
+    const curlocation = document.getElementById("txt-cur-location")
+    const curlocationText = curlocation.innerText
+    const res = list.find(item => item.name === curlocationText)
+    if (res) {
+      btnAttention.innerText = "添加关注"
+      list = list.filter(item => item.name !== curlocationText)
+    } else {
+      btnAttention.innerText = "取消关注"
+      list.push({
+        name: curlocationText,
+      })
+    }
+    const dom = document.getElementById("ls-attention")
+    let html = ""
+    for (let index = 0; index < list.length; index++) {
+      const element = list[index];
+      html += `<li class="city">
+        <span>${element.name}</span>
+        <span class="del">删除</span>
+      </li>`
+    }
+    dom.innerHTML = html
+  })
+
+  // 删除关注
+  const domAttention = document.getElementById("ls-attention")
+  domAttention.addEventListener("click", (e) => {
+    if (e.target.classList.contains("del")) {
+      const curlocationText = e.target.previousElementSibling.innerText
+      list = list.filter(item => item.name !== curlocationText)
+      const dom = document.getElementById("ls-attention")
+      let html = ""
+      for (let index = 0; index < list.length; index++) {
+        const element = list[index];
+        html += `<li class="city">
+          <span>${element.name}</span>
+          <span class="del">删除</span>
+        </li>`
+      }
+      dom.innerHTML = html
+    }
+  })
+
+
+  // 历史天气
+  async function getHistory(location) {
+    const date = new Date()
+    const y = date.getFullYear()
+    const m = date.getMonth() + 1 < 10 ? "0" + (date.getMonth() + 1) : date.getMonth() + 1
+    const d = date.getDate() - 1 < 10 ? "0" + (date.getDate() - 1) : date.getDate() - 1
+    const res = await fetch(`https://mj4y3jgbfa.re.qweatherapi.com/v7/historical/weather?location=${location}&date=${y}${m}${d}`, {
+      method: "GET",
+      headers: {
+        "X-QW-Api-Key": "a61047cd4b504375a4bc461dba98c39c"
+      }
+    }).then(res => res.json())
+    console.log(999, res.weatherDaily)
+
+    // 获取7天天气预报
+    const res1 = await fetch(`https://mj4y3jgbfa.re.qweatherapi.com/v7/weather/7d?location=${location}`, {
+      method: "GET",
+      headers: {
+        "X-QW-Api-Key": "a61047cd4b504375a4bc461dba98c39c"
+      }
+    }).then(res => res.json())
+    const total = [{
+      fxDate: res.weatherDaily.date,
+      iconDay: res.weatherHourly[0].icon,
+      iconNight: res.weatherHourly.at(-1).icon,
+      textDay: res.weatherHourly[0].text,
+      textNight: res.weatherHourly.at(-1).text,
+      windDirNight: res.weatherHourly.at(-1).windDir,
+      windDirDay: `${res.weatherHourly[0].windScale}-${res.weatherHourly[0].windSpeed}`,
+      windScaleNight: `${res.weatherHourly.at(-1).windScale}-${res.weatherHourly.at(-1).windSpeed}`,
+      ...res.weatherDaily
+    }, ...res1.daily]
+    console.log(555, total)
+    const dom7d = document.getElementById("ls-weather-day")
+    let html = ""
+    for (let index = 0; index < total.length; index++) {
+      const element = total[index];
+      const date = new Date(element.fxDate)
+      const month = date.getMonth() + 1 < 10 ? "0" + (date.getMonth() + 1) : date.getMonth() + 1
+      const day = date.getDate() < 10 ? "0" + date.getDate() : date.getDate()
+      element.fxDate = `${month}月${day}日`
+      html += `
+            <li class="item ${index === 0 ? "first" : ""}" style="width: 92px">
+              <p class="day">
+                ${index === 0 ? "昨天" : index === 1 ? "今天" : index === 2 ? "明天" : "周" + "日一二三四五六".charAt(new Date(element.fxDate).getDay())}
+              </p>
+              <p class="date">${element.fxDate}</p>
+              <div class="imgsdaytime">
+                <p class="weather">${element.textDay}</p> 
+                <i class="icon qi-${element.iconDay}-fill"></i>
+              </div>
+              <div class="imgsnight"> 
+                <i class="icon qi-${element.iconNight}-fill"></i>
+                <p class="weather">${element.textNight}</p>
+              </div>
+              <p class="wind">${element.windDirNight} ${element.windScaleNight}级</p>
+      `
+    }
+    dom7d.innerHTML = html
+
+    const myChart = echarts.init(document.getElementById('chart-days'));
+    console.log(33333, myChart);
+    // 实现温度折线图
+    const chartLabelData = total.map(item => item.fxDate)
+    const chartMaxData = total.map(item => item.tempMax)
+    const chartMinData = total.map(item => item.tempMin)
+    option = {
+      backgroundColor: "rgba(0,0,0,0.0)",
+      color: ["#FCC370", "#94CCF9"],
+      animation: false,
+      // renderAsImage: true,
+      tooltip: {
+        show: false,
+      },
+      xAxis: [{
+        type: 'category',
+        show: false,
+        data: chartLabelData,
+      }],
+      yAxis: [{
+        type: 'value',
+        show: false,
+        boundaryGap: ['45%', '45%'],
+        scale: true,
+      }],
+      grid: {
+        x: 0,
+        y: 0,
+        y2: 0,
+        height: 174,
+        width: 740,
+        borderWidth: "0px",
+      },
+      // legend: {
+      //     orient: 'horizontal',
+      //     x: 'center',
+      //     y: 'top',
+      //     itemGap: 55
+      // },
+
+      series: [{
+        type: 'line',
+        data: chartMaxData,
+        smooth: true,
+        symbol: 'circle',
+        symbolSize: 8,
+        clipOverflow: false,
+        lineStyle: {
+          normal: {
+            width: 3,
+          },
+        },
+        label: {
+          normal: {
+            show: true,
+            textStyle: {
+              fontSize: '18',
+              fontFamily: '微软雅黑',
+              color: "#384C78",
+            },
+            distance: 10,
+            formatter: function (val) {
+              if (val.dataIndex == 0) {
+                return `{first|${val.data}°}`;
+              };
+              return `${val.data}°`;
+            },
+            rich: {
+              first: {
+                fontSize: '18',
+                fontFamily: '微软雅黑',
+                color: "#C2C2C2",
+              },
+            },
+          },
+        },
+      },
+      {
+        type: 'line',
+        data: chartMinData,
+        smooth: true,
+        symbol: 'circle',
+        symbolSize: 8,
+        lineStyle: {
+          normal: {
+            width: 3,
+          },
+        },
+        label: {
+          normal: {
+            show: true,
+            position: "bottom",
+            textStyle: {
+              fontSize: '18',
+              fontFamily: '微软雅黑',
+              color: "#555555",
+            },
+            distance: 10,
+            formatter: function (val) {
+              if (val.dataIndex == 0) {
+                return `{first|${val.data}°}`;
+              };
+              return `${val.data}°`;
+            },
+            rich: {
+              first: {
+                fontSize: '18',
+                fontFamily: '微软雅黑',
+                color: "#C2C2C2",
+              },
+            },
+          },
+        },
+      },
+      ],
+    };
+    myChart.setOption(option);
+  }
+
+  getHistory("101110101")
+  // 小时
+  function xiaoshi(location) {
+    fetch(`https://mj4y3jgbfa.re.qweatherapi.com/v7/weather/24h?location=${location}`, {
+      method: "GET",
+      headers: {
+        "X-QW-Api-Key": "a61047cd4b504375a4bc461dba98c39c"
+      }
+    }).then(res => res.json()).then(data => {
+      console.log(111, data)
+      const h = document.getElementById("ls-weather-hour")
+      let html = ""
+      data.hourly.forEach(item => {
+        html += `
+         <li class="item">
+            <p class="txt-time">${item.fxTime.split("T")[1].split("+")[0]}</p> 
+            <i class="icon qi-${item.icon}-fill"></i>
+            <p class="txt-degree">${item.temp}°</p>
+          </li>
+        `
+      })
+      h.innerHTML = html
+    })
+  }
+
+  xiaoshi("101110101")
+
+  // 现在天气
+  function now(location) {
+    fetch(`https://mj4y3jgbfa.re.qweatherapi.com/v7/weather/now?location=${location}`, {
+      method: "GET",
+      headers: {
+        "X-QW-Api-Key": "a61047cd4b504375a4bc461dba98c39c"
+      }
+    }).then(res => res.json()).then(data => {
+      console.log(222, data)
+      // {
+      //   "code": "200",
+      //   "updateTime": "2020-06-30T22:00+08:00",
+      //   "fxLink": "http://hfx.link/2ax1",
+      //   "now": {
+      //     "obsTime": "2020-06-30T21:40+08:00",
+      //     "temp": "24",
+      //     "feelsLike": "26",
+      //     "icon": "101",
+      //     "text": "多云",
+      //     "wind360": "123",
+      //     "windDir": "东南风",
+      //     "windScale": "1",
+      //     "windSpeed": "3",
+      //     "humidity": "72",
+      //     "precip": "0.0",
+      //     "pressure": "1003",
+      //     "vis": "16",
+      //     "cloud": "10",
+      //     "dew": "21"
+      //   },
+      //   "refer": {
+      //     "sources": [
+      //       "QWeather",
+      //       "NMC",
+      //       "ECMWF"
+      //     ],
+      //     "license": [
+      //       "QWeather Developers License"
+      //     ]
+      //   }
+      // }
+      /**
+          <div id="imgscurrent">
+     
+    </div>
+       **/
+      const current = document.getElementById("imgscurrent")
+      const html = `
+         <div class="container">
+        <p id="txt-pub-time">中央气象台20:30发布</p>
+        <div id="imgsmain">
+          <p id="txt-temperature">${data.now.temp}°</p>
+          <p id="txt-name">${data.now.text}</p>
+          <div id="imgsaqi" class="air-level1">
+            <p class="info-aqi">32 优</p>
+            <div id="air-window" class="popwindow">
+              <div class="header">空气质量指数 32&nbsp;优</div>
+              <div class="detail">
+                <div class="inner">
+                  <table id="tb-detail">
+                    <tbody>
+                      <tr class="line1">
+                        <td>
+                          <p class="val">17</p>
+                          <p class="titl">PM2.5</p>
+                        </td>
+                        <td class="nth-2">
+                          <p class="val">25</p>
+                          <p class="titl">PM10</p>
+                        </td>
+                        <td>
+                          <p class="val">3</p>
+                          <p class="titl">SO2</p>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <p class="val">12</p>
+                          <p class="titl">NO2</p>
+                        </td>
+                        <td class="nth-2">
+                          <p class="val">102</p>
+                          <p class="titl">O3</p>
+                        </td>
+                        <td>
+                          <p class="val">0.6</p>
+                          <p class="titl">CO</p>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+          <ul id="ls-warning"></ul>
+        </div>
+        <div id="imgsother">
+          <p class="item">
+            <i class="icon wind-4" id="icon-wind"></i>
+            <span class="txt" id="txt-wind">${data.now.windDir}${data.now.windScale}</span>
+          </p>
+          <p class="item">
+            <i class="icon" id="icon-humidity"></i>
+            <span class="txt" id="txt-humidity">湿度 ${data.now.humidity}%</span>
+          </p>
+          <p class="item">
+            <i class="icon" id="icon-kPa"></i>
+            <span class="txt" id="txt-kPa">气压 ${data.now.pressure}hPa</span>
+          </p>
+          <p class="item show" id="info-limit">
+            <i class="icon" id="icon-limit"></i>
+            <span class="txt" id="txt-limit">${data.now.vis}km</span>
+          </p>
+        </div>
+      
+        <div id="imgscurrent-weather">
+
+            <i class="big_icon qi-${data.now.icon}-fill"></i>
+            
+          </div>
+      </div>
+      `
+      current.innerHTML = html
+
+    })
+  }
+  now("101110101")
+
+</script>
 
 </html>
