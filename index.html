@@ -7,6 +7,7 @@
   <meta name="description" content="腾讯天气">
   <link rel="stylesheet" href="./index.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/qweather-icons@1.8.0/font/qweather-icons.css">
+  <link rel="shortcut icon" href="https://mat1.gtimg.com/www/icon/favicon2.ico">
   <script src="./echarts.js"></script>
 </head>
 
@@ -33,6 +34,17 @@
             <ul id="ls-match">
               <li class="match">陕西-西安</li>
             </ul>
+            <div id="hot-city">
+              <div id="history">
+                <p class="tit">历史记录</p>
+                <a id="btn-clean">清除</a>
+                <ul class="ls-city" id="ls-history">
+                </ul>
+              </div>
+              <p class="tit">热门城市</p>
+              <ul id="ls-hot-city" class="ls-city">
+              </ul>
+            </div>
           </div>
         </div>
       </div>
@@ -45,8 +57,8 @@
       <h2 id="title">逐小时预报</h2>
       <a id="txt-source" href="http://www.weather.com.cn/" target="_blank">数据来源于中国天气网</a>
       <div class="imgspage-ctrl">
-        <a href="javascript:;" id="btn-prev" class="btn"></a>
-        <a href="javascript:;" id="btn-next" class="btn"></a>
+        <a href="javascript:;" id="btn-prev" class="btn btn-time-prev"></a>
+        <a href="javascript:;" id="btn-next" class="btn btn-time-next"></a>
       </div>
       <div id="imgsweather">
         <ol id="ls-weather-hour" class="ls-weather">
@@ -73,8 +85,8 @@
       </div>
       <div id="imgsliving-index">
         <div class="imgspage-ctrl">
-          <a href="javascript:;" id="btn-prev" class="btn"></a>
-          <a href="javascript:;" id="btn-next" class="btn"></a>
+          <a href="javascript:;" id="btn-prev" class="btn btn-living-prev"></a>
+          <a href="javascript:;" id="btn-next" class="btn btn-living-next"></a>
         </div>
         <h2 id="title">生活指数</h2>
         <div id="imgspages">
@@ -129,6 +141,56 @@
                 </div>
               </li>
             </ul>
+            <ul id="ls-living1" class="page">
+              <li class="item odd">
+                <div class="imgssub"> <i class="icon icon_diaoyu"></i>
+                  <p class="content">钓鱼&nbsp;不宜</p>
+                </div>
+                <div class="imgsdetail">
+                  <div class="detail">天气不好，不适合垂钓。</div>
+                </div>
+              </li>
+              <li class="item even">
+                <div class="imgssub"> <i class="icon icon_lvyou"></i>
+                  <p class="content">旅游&nbsp;适宜</p>
+                </div>
+                <div class="imgsdetail">
+                  <div class="detail">温度适宜，又有较弱降水和微风作伴，会给您的旅行带来意想不到的景象，适宜旅游，可不要错过机会呦！</div>
+                </div>
+              </li>
+              <li class="item odd">
+                <div class="imgssub"> <i class="icon icon_jiaotong"></i>
+                  <p class="content">交通&nbsp;一般</p>
+                </div>
+                <div class="imgsdetail">
+                  <div class="detail">有降水，路面湿滑，刹车距离延长，事故易发期，注意车距，务必小心驾驶。</div>
+                </div>
+              </li>
+              <li class="item even">
+                <div class="imgssub"> <i class="icon icon_wurankuosan"></i>
+                  <p class="content">空气污染扩散条件&nbsp;良</p>
+                </div>
+                <div class="imgsdetail">
+                  <div class="detail">气象条件有利于空气污染物稀释、扩散和清除。</div>
+                </div>
+              </li>
+              <li class="item odd">
+                <div class="imgssub"> <i class="icon icon_shushidu"></i>
+                  <p class="content">舒适度&nbsp;舒适</p>
+                </div>
+                <div class="imgsdetail">
+                  <div class="detail">白天温度适宜，风力不大，相信您在这样的天气条件下，应会感到比较清爽和舒适。</div>
+                </div>
+              </li>
+              <li class="item even">
+                <div class="imgssub"> <i class="icon icon_liangshai"></i>
+                  <p class="content">晾晒&nbsp;不宜</p>
+                </div>
+                <div class="imgsdetail">
+                  <div class="detail">有降水，不适宜晾晒。若需要晾晒，请在室内准备出充足的空间。</div>
+                </div>
+              </li>
+            </ul>
           </div>
         </div>
       </div>
@@ -163,8 +225,9 @@
   //     "X-QW-Api-Key": "a61047cd4b504375a4bc461dba98c39c"
   //   }
   // }).then(res => res.json()).then(data => {
-  //   console.log(5555555, data)
+  //   console.log(123456, data)
   // })
+
 
   const cityInfo = [
     {
@@ -176,27 +239,133 @@
       id: "101020100"
     },
     {
-      name: "陕西-西安",
+      name: "西安",
       id: "101110101"
     },
     {
-      name: "广东-深圳",
+      name: "深圳",
       id: "101280601"
     },
     {
-      name: "内蒙古-呼和浩特",
-      id: "101080101r"
+      name: "广州",
+      id: "101280101"
+    },
+    {
+      name: "武汉",
+      id: "101200101"
+    },
+    {
+      name: "成都",
+      id: "101270101"
+    },
+    {
+      name: "石家庄",
+      id: "101090101"
+    },
+    {
+      name: "郑州",
+      id: "101180101"
+    },
+    {
+      name: "哈尔滨",
+      id: "101050101"
+    },
+    {
+      name: "厦门",
+      id: "101230201"
+    },
+    {
+      name: "天津",
+      id: "101030100"
     }
   ]
 
+  // 实现ls-history功能 点击或者搜索的要加到这里面
+  //你应该维护一个变量 在写一个渲染函数 每次操作后调用
+
+  let historyList = []
+  const lh = document.getElementById("ls-history")
+
+  // 渲染函数
+  function renderHistory() {
+    let html = ""
+    for (const element of historyList) {
+      html += `<li class="opts"><span class="hot_match" data-id="${element.id}">${element.name}</span></li>`
+    }
+    lh.innerHTML = html
+  }
+
+  // 点击清除按钮，清除历史记录
+  const btnClean = document.getElementById("btn-clean")
+  btnClean.addEventListener("click", () => {
+    historyList = []
+    renderHistory()
+  })
+
+  const lsHistory = document.getElementById("ls-hot-city")
+  let lihtml = ``;
+  for (const element of cityInfo) {
+    lihtml += `<li class="opts"><span class="hot_match" data-id="${element.id}">${element.name}</span></li>`
+  }
+  lsHistory.innerHTML = lihtml
+
+
+  function change(e) {
+    if (e.target.classList.contains("hot_match")) {
+      // locationdom.value = e.target.innerHTML
+      const curlocation = document.getElementById("txt-cur-location")
+      curlocation.innerText = e.target.innerHTML
+      console.log(2222, list, e.target.innerHTML);
+
+      btnAttention.innerText = list.find(item => item.name === e.target.innerHTML) ? "取消关注" : "添加关注"
+
+      domMatch.style.display = "none"
+      const id = e.target.dataset.id
+      // 点击热门城市，将热门城市的值赋值给input框
+      historyList.push({
+        name: e.target.innerHTML,
+        id: id
+      })
+      renderHistory()
+      getHistory(id)
+      xiaoshi(id)
+      now(id)
+    }
+  }
+
+
+  lsHistory.addEventListener("click", change)
+  lh.addEventListener("click", change)
+
+  document.addEventListener("click", (e) => {
+    if (e.target.id !== "location" && e.target.id !== "ls-match" && e.target.id !== "hot-city") {
+      const hotCity = document.getElementById("hot-city")
+      hotCity.style.display = "none"
+      const domMatch = document.getElementById("ls-match")
+      domMatch.style.display = "none"
+    }
+  })
+
   // 基于 cityInfo 实现 id=location 的input框模糊搜索功能
   const locationdom = document.getElementById("location")
+  locationdom.onfocus = () => {
+    const hotCity = document.getElementById("hot-city")
+    hotCity.style.display = "block"
+  }
+
+  locationdom.onblur = () => {
+    // 清空输入框
+    locationdom.value = ""
+  }
+
   locationdom.addEventListener("input", (e) => {
     const domMatch = document.getElementById("ls-match")
+    const hotCity = document.getElementById("hot-city")
 
     const value = e.target.value
     if (value === "") {
       domMatch.style.display = "none"
+      hotCity.style.display = "block"
       return
     }
     const res = cityInfo.filter(item => item.name.includes(value))
@@ -208,8 +377,10 @@
     domMatch.innerHTML = html
     // 显示domMatch元素
     domMatch.style.display = "block"
+    hotCity.style.display = "none"
     console.log(111, res)
   })
+
 
   let list = []
 
@@ -219,7 +390,7 @@
   const domMatch = document.getElementById("ls-match")
   domMatch.addEventListener("click", (e) => {
     if (e.target.classList.contains("match")) {
-      locationdom.value = e.target.innerHTML
+      // locationdom.value = e.target.innerHTML
       const curlocation = document.getElementById("txt-cur-location")
       curlocation.innerText = e.target.innerHTML
       console.log(2222, list, e.target.innerHTML);
@@ -228,6 +399,12 @@
 
       domMatch.style.display = "none"
       const id = e.target.dataset.id
+      // 点击匹配项，将匹配项的值赋值给input框
+      historyList.push({
+        name: e.target.innerHTML,
+        id: id
+      })
+      renderHistory()
       getHistory(id)
       xiaoshi(id)
       now(id)
@@ -277,6 +454,8 @@
         </li>`
       }
       dom.innerHTML = html
+      // 取消关注换成添加
+      btnAttention.innerText = "添加关注"
     }
   })
 
@@ -321,11 +500,12 @@
       const date = new Date(element.fxDate)
       const month = date.getMonth() + 1 < 10 ? "0" + (date.getMonth() + 1) : date.getMonth() + 1
       const day = date.getDate() < 10 ? "0" + date.getDate() : date.getDate()
+      // 后面那个一二三四五六转换不对
       element.fxDate = `${month}月${day}日`
       html += `
             <li class="item ${index === 0 ? "first" : ""}" style="width: 92px">
               <p class="day">
-                ${index === 0 ? "昨天" : index === 1 ? "今天" : index === 2 ? "明天" : "周" + "日一二三四五六".charAt(new Date(element.fxDate).getDay())}
+                ${index === 0 ? "昨天" : index === 1 ? "今天" : index === 2 ? "明天" : "周" + "日一二三四五六".charAt(date.getDay())}
               </p>
               <p class="date">${element.fxDate}</p>
               <div class="imgsdaytime">
@@ -463,16 +643,18 @@
   getHistory("101110101")
   // 小时
   function xiaoshi(location) {
-    fetch(`https://mj4y3jgbfa.re.qweatherapi.com/v7/weather/24h?location=${location}`, {
+    fetch(`https://mj4y3jgbfa.re.qweatherapi.com/v7/weather/72h?location=${location}`, {
       method: "GET",
       headers: {
         "X-QW-Api-Key": "a61047cd4b504375a4bc461dba98c39c"
       }
     }).then(res => res.json()).then(data => {
+      const result = data.hourly.slice(0, 24)
       console.log(111, data)
+
       const h = document.getElementById("ls-weather-hour")
       let html = ""
-      data.hourly.forEach(item => {
+      result.forEach(item => {
         html += `
          <li class="item">
             <p class="txt-time">${item.fxTime.split("T")[1].split("+")[0]}</p> 
@@ -615,6 +797,36 @@
     })
   }
   now("101110101")
+
+  const btnTimePrev = document.querySelector(".btn-time-prev")
+  btnTimePrev.addEventListener("click", () => {
+    console.log(111)
+    const lsWeatherHour = document.getElementById("ls-weather-hour")
+    lsWeatherHour.style.transform = "translateX(0)"
+  })
+
+  const btnTimeNext = document.querySelector(".btn-time-next")
+  btnTimeNext.addEventListener("click", () => {
+    const lsWeatherHour = document.getElementById("ls-weather-hour")
+    const itemWidth = lsWeatherHour.offsetWidth
+    lsWeatherHour.style.transform = `translateX(-${itemWidth / 4}px)`
+  })
+
+  // 做一下btn-living-prev的切换
+  const btnLivingPrev = document.querySelector(".btn-living-prev")
+  btnLivingPrev.addEventListener("click", () => {
+    console.log(111)
+    const imgsLiving = document.getElementById("imgscontent")
+    imgsLiving.style.transform = "translateX(0)"
+  })
+  // 做一下btn-living-next的切换
+  const btnLivingNext = document.querySelector(".btn-living-next")
+  btnLivingNext.addEventListener("click", () => {
+    console.log(111)
+    const imgsLiving = document.getElementById("imgscontent")
+    const itemWidth = imgsLiving.offsetWidth
+    imgsLiving.style.transform = `translateX(-${itemWidth / 2}px)`
+  })
 
 </script>
 
