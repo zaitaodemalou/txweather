@@ -7,7 +7,6 @@
   <meta name="description" content="腾讯天气">
   <link rel="stylesheet" href="./index.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/qweather-icons@1.8.0/font/qweather-icons.css">
-  <link rel="shortcut icon" href="https://mat1.gtimg.com/www/icon/favicon2.ico">
   <script src="./echarts.js"></script>
 </head>
 
@@ -19,6 +18,25 @@
         <div id="imgslocation">
           <a href="https://www.qq.com/" style="color: #fff;margin-right: 20px;">腾讯网首页</a>
           <a href="javascript:void(0)" onclick="window.aria.start()" style="color: #fff;margin-right: 20px;">无障碍浏览</a>
+          <script>
+            // 检查用户登录状态
+            const currentUser = localStorage.getItem('currentUser');
+            if (currentUser) {
+              document.write('<span style="color: #fff;margin-right: 20px;">欢迎，' + currentUser + '</span>');
+              document.write('<a href="javascript:void(0)" onclick="logout()" style="color: #fff;margin-right: 20px;">退出</a>');
+            } else {
+              document.write('<a href="login.html" style="color: #fff;margin-right: 20px;">登录</a>');
+              document.write('<a href="register.html" style="color: #fff;margin-right: 20px;">注册</a>');
+            }
+          </script>
+          <script>
+            // 退出登录函数
+            function logout() {
+              localStorage.removeItem('currentUser');
+              alert('已退出登录');
+              window.location.reload();
+            }
+          </script>
           <div id="imgsshow">
             <p id="txt-cur-location" class="position">陕西-西安</p>
             <div id="imgsattention">
@@ -277,6 +295,54 @@
     {
       name: "天津",
       id: "101030100"
+    }, {
+      name: "秦皇岛",
+      id: "101091101"
+    }, {
+      name: "长安",
+      id: "101110102"
+    }, {
+      name: "咸阳",
+      id: "101110200"
+    }, {
+      name: "唐山",
+      id: "101090501"
+    }, {
+      name: "杭州",
+      id: "101210101"
+    }, {
+      name: "济南",
+      id: "101120101"
+    }, {
+      name: "青岛",
+      id: "101120201"
+    }, {
+      name: "烟台",
+      id: "101120501"
+    }, {
+      name: "桂林",
+      id: "101300501"
+    }, {
+      name: "宝鸡",
+      id: "101110901"
+    }, {
+      name: "北海",
+      id: "101301301"
+    }, {
+      name: "丽江",
+      id: "101291401"
+    }, {
+      name: "大理",
+      id: "101290201"
+    }, {
+      name: "海口",
+      id: "101310101"
+    }, {
+      name: "重庆",
+      id: "101040100"
+    }, {
+      name: "合肥",
+      id: "101220101"
     }
   ]
 
@@ -413,8 +479,14 @@
 
   // 添加 btn-attention 添加关注 把当前城市添加到关注列表
   const btnAttention = document.getElementById("btn-attention")
+  // 存储默认城市
+  let defaultCity = localStorage.getItem('defaultCity') || '西安';
+
+  // 初始化默认城市显示
+  const curlocation = document.getElementById("txt-cur-location")
+  curlocation.innerText = defaultCity;
+
   btnAttention.addEventListener("click", (e) => {
-    const curlocation = document.getElementById("txt-cur-location")
     const curlocationText = curlocation.innerText
     const res = list.find(item => item.name === curlocationText)
     if (res) {
@@ -424,36 +496,124 @@
       btnAttention.innerText = "取消关注"
       list.push({
         name: curlocationText,
+        isDefault: curlocationText === defaultCity
       })
     }
+    renderAttentionList();
+  })
+
+  // 渲染关注列表函数
+  function renderAttentionList() {
     const dom = document.getElementById("ls-attention")
     let html = ""
     for (let index = 0; index < list.length; index++) {
       const element = list[index];
+      const isDefault = element.name === defaultCity;
       html += `<li class="city">
-        <span>${element.name}</span>
-        <span class="del">删除</span>
+        <span>${element.name}${isDefault ? ' <span class="default-tag">默认</span>' : ''}</span>
+        <span class="set-default" data-name="${element.name}">${isDefault ? '取消默认' : '设为默认'}</span>
+        <span class="current-weather" data-name="${element.name}" data-id="${cityInfo.find(item => item.name === element.name)?.id || ''}">加载中...</span>
+        <span class="del" data-name="${element.name}">删除</span>
       </li>`
     }
-    dom.innerHTML = html
-  })
+    dom.innerHTML = html;
+
+    // 添加鼠标划过效果
+    const setDefaultSpans = document.querySelectorAll('.set-default');
+    setDefaultSpans.forEach(span => {
+      span.addEventListener('mouseover', function () {
+        const cityName = this.getAttribute('data-name');
+        this.textContent = cityName === defaultCity ? '取消默认' : '设为默认';
+      });
+    });
+
+    // 添加设为默认点击事件
+    setDefaultSpans.forEach(span => {
+      span.addEventListener('click', function (e) {
+        e.stopPropagation();
+        const cityName = this.getAttribute('data-name');
+        if (cityName === defaultCity) {
+          // 取消默认
+          defaultCity = '';
+          localStorage.removeItem('defaultCity');
+        } else {
+          // 设为默认
+          defaultCity = cityName;
+          localStorage.setItem('defaultCity', defaultCity);
+          curlocation.innerText = defaultCity;
+        }
+        renderAttentionList();
+      });
+    });
+
+    // 更新所有城市的当前天气
+    function updateAllCurrentWeather() {
+      const currentWeatherSpans = document.querySelectorAll('.current-weather');
+      currentWeatherSpans.forEach(span => {
+        const cityId = span.getAttribute('data-id');
+        if (cityId) {
+          // 使用fetch直接获取天气数据
+          fetch(`https://mj4y3jgbfa.re.qweatherapi.com/v7/weather/now?location=${cityId}`, {
+            method: "GET",
+            headers: {
+              "X-QW-Api-Key": "a61047cd4b504375a4bc461dba98c39c"
+            }
+          })
+            .then(response => response.json())
+            .then(data => {
+              if (data.code === '200') {
+                const weather = data.now;
+                span.textContent = `${weather.temp}° ${weather.text}`;
+              } else {
+                span.textContent = '获取失败';
+              }
+            })
+            .catch(error => {
+              console.error('获取天气数据失败:', error);
+              span.textContent = '获取失败';
+            });
+        }
+      });
+    }
+
+    // 初始加载所有城市天气
+    updateAllCurrentWeather();
+
+    // 添加当前天气点击事件
+    const currentWeatherSpans = document.querySelectorAll('.current-weather');
+    currentWeatherSpans.forEach(span => {
+      span.addEventListener('click', function (e) {
+        e.stopPropagation();
+        const cityName = this.getAttribute('data-name');
+        curlocation.innerText = cityName;
+        // 查找城市ID
+        const city = cityInfo.find(item => item.name === cityName);
+        if (city) {
+          getHistory(city.id);
+          xiaoshi(city.id);
+          now(city.id);
+        }
+      });
+    });
+  }
+
+  // 初始化关注列表
+  renderAttentionList();
 
   // 删除关注
   const domAttention = document.getElementById("ls-attention")
   domAttention.addEventListener("click", (e) => {
     if (e.target.classList.contains("del")) {
-      const curlocationText = e.target.previousElementSibling.innerText
-      list = list.filter(item => item.name !== curlocationText)
-      const dom = document.getElementById("ls-attention")
-      let html = ""
-      for (let index = 0; index < list.length; index++) {
-        const element = list[index];
-        html += `<li class="city">
-          <span>${element.name}</span>
-          <span class="del">删除</span>
-        </li>`
+      const cityName = e.target.getAttribute('data-name');
+      list = list.filter(item => item.name !== cityName)
+
+      // 如果删除的是默认城市，清除默认设置
+      if (cityName === defaultCity) {
+        defaultCity = '';
+        localStorage.removeItem('defaultCity');
       }
-      dom.innerHTML = html
+
+      renderAttentionList();
       // 取消关注换成添加
       btnAttention.innerText = "添加关注"
     }
@@ -671,54 +831,26 @@
 
   // 现在天气
   function now(location) {
+    // 查找城市名称
+    const city = cityInfo.find(item => item.id === location);
+    const cityName = city ? city.name : '未知城市';
+
     fetch(`https://mj4y3jgbfa.re.qweatherapi.com/v7/weather/now?location=${location}`, {
       method: "GET",
       headers: {
         "X-QW-Api-Key": "a61047cd4b504375a4bc461dba98c39c"
       }
     }).then(res => res.json()).then(data => {
+      if (data.code !== '200') {
+        console.error('获取天气数据失败:', data);
+        return;
+      }
+
       console.log(222, data)
-      // {
-      //   "code": "200",
-      //   "updateTime": "2020-06-30T22:00+08:00",
-      //   "fxLink": "http://hfx.link/2ax1",
-      //   "now": {
-      //     "obsTime": "2020-06-30T21:40+08:00",
-      //     "temp": "24",
-      //     "feelsLike": "26",
-      //     "icon": "101",
-      //     "text": "多云",
-      //     "wind360": "123",
-      //     "windDir": "东南风",
-      //     "windScale": "1",
-      //     "windSpeed": "3",
-      //     "humidity": "72",
-      //     "precip": "0.0",
-      //     "pressure": "1003",
-      //     "vis": "16",
-      //     "cloud": "10",
-      //     "dew": "21"
-      //   },
-      //   "refer": {
-      //     "sources": [
-      //       "QWeather",
-      //       "NMC",
-      //       "ECMWF"
-      //     ],
-      //     "license": [
-      //       "QWeather Developers License"
-      //     ]
-      //   }
-      // }
-      /**
-          <div id="imgscurrent">
-     
-    </div>
-       **/
       const current = document.getElementById("imgscurrent")
       const html = `
          <div class="container">
-        <p id="txt-pub-time">中央气象台20:30发布</p>
+        <p id="txt-pub-time">中央气象台${data.updateTime.split('T')[1].split('+')[0]}发布</p>
         <div id="imgsmain">
           <p id="txt-temperature">${data.now.temp}°</p>
           <p id="txt-name">${data.now.text}</p>
@@ -769,7 +901,7 @@
         <div id="imgsother">
           <p class="item">
             <i class="icon wind-4" id="icon-wind"></i>
-            <span class="txt" id="txt-wind">${data.now.windDir}${data.now.windScale}</span>
+            <span class="txt" id="txt-wind">${data.now.windDir} ${data.now.windScale}级</span>
           </p>
           <p class="item">
             <i class="icon" id="icon-humidity"></i>
@@ -781,22 +913,46 @@
           </p>
           <p class="item show" id="info-limit">
             <i class="icon" id="icon-limit"></i>
-            <span class="txt" id="txt-limit">${data.now.vis}km</span>
+            <span class="txt" id="txt-limit">能见度 ${data.now.vis}km</span>
           </p>
         </div>
       
         <div id="imgscurrent-weather">
-
             <i class="big_icon qi-${data.now.icon}-fill"></i>
-            
           </div>
       </div>
       `
       current.innerHTML = html
 
+      // 更新当前城市显示
+      curlocation.innerText = cityName;
+
+      // 更新关注按钮状态
+      const res = list.find(item => item.name === cityName)
+      btnAttention.innerText = res ? "取消关注" : "添加关注";
+    }).catch(error => {
+      console.error('获取天气数据异常:', error);
     })
   }
-  now("101110101")
+
+  // 初始化默认城市天气
+  function initDefaultCityWeather() {
+    // 查找默认城市的ID
+    const defaultCityObj = cityInfo.find(item => item.name === defaultCity);
+    if (defaultCityObj) {
+      getHistory(defaultCityObj.id);
+      xiaoshi(defaultCityObj.id);
+      now(defaultCityObj.id);
+    } else {
+      // 如果默认城市不在列表中，使用西安
+      getHistory("101110101");
+      xiaoshi("101110101");
+      now("101110101");
+    }
+  }
+
+  // 初始化天气
+  initDefaultCityWeather();
 
   const btnTimePrev = document.querySelector(".btn-time-prev")
   btnTimePrev.addEventListener("click", () => {
