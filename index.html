@@ -506,14 +506,21 @@
   function renderAttentionList() {
     const dom = document.getElementById("ls-attention")
     let html = ""
+    console.log(344444, list, cityInfo);
+
     for (let index = 0; index < list.length; index++) {
       const element = list[index];
       const isDefault = element.name === defaultCity;
       html += `<li class="city">
-        <span>${element.name}${isDefault ? ' <span class="default-tag">默认</span>' : ''}</span>
-        <span class="set-default" data-name="${element.name}">${isDefault ? '取消默认' : '设为默认'}</span>
+        <p class="city-name">${element.name}
+          ${isDefault ? ' <span class="default-tag">默认</span>' : ''}
+          <span class="set-default" data-name="${element.name}">${isDefault ? '取消默认' : '设为默认'}</span>
+          </p>
         <span class="current-weather" data-name="${element.name}" data-id="${cityInfo.find(item => item.name === element.name)?.id || ''}">加载中...</span>
-        <span class="del" data-name="${element.name}">删除</span>
+        <span class="current-wendu" data-name="${element.name}" data-id="${cityInfo.find(item => item.name === element.name)?.id || ''}">加载中...</span>
+        <span class="del">
+          <img class='del-image' data-name="${element.name}" src="./imgs/del.png" alt="">
+        </span>
       </li>`
     }
     dom.innerHTML = html;
@@ -549,7 +556,9 @@
     // 更新所有城市的当前天气
     function updateAllCurrentWeather() {
       const currentWeatherSpans = document.querySelectorAll('.current-weather');
-      currentWeatherSpans.forEach(span => {
+      const wenduSpans = document.querySelectorAll('.current-wendu');
+
+      currentWeatherSpans.forEach((span, index) => {
         const cityId = span.getAttribute('data-id');
         if (cityId) {
           // 使用fetch直接获取天气数据
@@ -563,7 +572,13 @@
             .then(data => {
               if (data.code === '200') {
                 const weather = data.now;
-                span.textContent = `${weather.temp}° ${weather.text}`;
+                console.log(99999, weather);
+
+                span.innerHTML = `
+                <i class="icon qi-${weather.icon}-fill"></i>
+                ${weather.text}
+                `;
+                wenduSpans[index].textContent = `${weather.temp}°/${weather.feelsLike}°`;
               } else {
                 span.textContent = '获取失败';
               }
@@ -574,6 +589,7 @@
             });
         }
       });
+
     }
 
     // 初始加载所有城市天气
@@ -603,7 +619,7 @@
   // 删除关注
   const domAttention = document.getElementById("ls-attention")
   domAttention.addEventListener("click", (e) => {
-    if (e.target.classList.contains("del")) {
+    if (e.target.classList.contains("del-image")) {
       const cityName = e.target.getAttribute('data-name');
       list = list.filter(item => item.name !== cityName)
 
@@ -612,6 +628,7 @@
         defaultCity = '';
         localStorage.removeItem('defaultCity');
       }
+      console.log(4344434343, list);
 
       renderAttentionList();
       // 取消关注换成添加

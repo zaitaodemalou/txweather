@@ -1070,3 +1070,64 @@ a {
     text-align: center;
     margin-left: 0
 }
+
+.city-name {
+    width: 120px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.city:hover .set-default {
+    display: flex;
+}
+
+.city:hover .default-tag {
+    display: none;
+}
+
+.city:hover .del {
+    opacity: 1;
+}
+
+.city {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.default-tag {
+    color: #0745e3;
+    border: 1px solid #0745e3;
+    border-radius: 2px;
+    height: 14px;
+    padding: 0 3px;
+    font-size: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 4px;
+}
+
+.set-default {
+    color: #999;
+    border: 1px solid #999;
+    border-radius: 2px;
+    display: none;
+    margin-left: 4px;
+    height: 14px;
+    padding: 0 3px;
+    font-size: 10px;
+    display: none;
+    align-items: center;
+    justify-content: center;
+}
+
+.del {
+    opacity: 0;
+}
+
+.del-image {
+    width: 19px;
+    height: 19px;
+}
